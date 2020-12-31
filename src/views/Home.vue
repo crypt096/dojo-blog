@@ -1,9 +1,15 @@
 <template>
-  <div class="home">home</div>
-  <h1>Home</h1>
-  <PostList :posts="posts" v-if="showPosts" />
-  <button @click="showPosts = !showPosts">Toggle posts</button>
-  <button @click="posts.pop()">Delete post</button>
+  <div class="home">
+    home
+    <h1>Home</h1>
+    <div v-if="error">
+      {{ error }}
+    </div>
+    <div v-if="posts.length">
+      <PostList :posts="posts" />
+    </div>
+    <div v-else>Loading...</div>
+  </div>
 </template>
 
 <script>
@@ -15,18 +21,24 @@ export default {
     PostList,
   },
   setup() {
-    const posts = ref([
-      {
-        title: "welcome to the blog",
-        body:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ipsam enim, reprehenderit facere est eligendi earum voluptatibus fugit debitis! Est, incidunt quo in fugiat doloremque sit quae repellat illo veritatis nam dolor. Eveniet culpa eius fuga iusto nostrum libero obcaecati ex excepturi facere molestias. Aliquam ab exercitationem iste voluptates explicabo quae eos autem et quas fugiat itaque, veniam in qui officiis? Deserunt facere optio iste consequatur necessitatibus",
-        id: 1,
-      },
-      { title: "top 5 css tips", body: "lorem ipsum", id: 2 },
-    ]);
+    const posts = ref([]);
+    const error = ref(null);
 
-    const showPosts = ref(true);
-    return { posts, showPosts };
+    const load = async () => {
+      try {
+        let data = await fetch("http://localhost:3000/posts");
+        if (!data.ok) {
+          throw Error("No data available");
+        }
+        posts.value = await data.json();
+      } catch (err) {
+        error.value = err.message;
+        console.log(error.value);
+      }
+    };
+
+    load();
+    return { posts, error };
   },
 };
 </script>

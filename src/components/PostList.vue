@@ -15,17 +15,7 @@ export default {
   components: {
     SinglePost,
   },
-  setup(props) {
-    onMounted(() => {
-      console.log("component mounted");
-    });
-    onUnmounted(() => {
-      console.log("component unmounted");
-    });
-    onUpdated(() => {
-      console.log("component updated");
-    });
-  },
+  setup(props) {},
 };
 </script>
 
